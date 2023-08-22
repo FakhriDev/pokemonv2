@@ -5,7 +5,7 @@ import { ArrowLeft } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import { fetchPokemon } from '../Services/fetchPokemon.service';
 import { CardPokemon } from '../Components/Fragments/CardPokemon';
-const favorite = () => {
+const Page = () => {
   const [favorites, setFavorites] = useState([]);
   const [pokemons, setPokemons] = useState([]);
   useEffect(() => {
@@ -48,6 +48,7 @@ const favorite = () => {
                 );
                 return (
                   <CardPokemon
+                    key={item.id}
                     pokemon={pokemon}
                     handleToFavorite={handleFavorite}
                     favorites={favorites}
@@ -67,4 +68,4 @@ const favorite = () => {
     </>
   );
 };
-export default favorite;
+export default Page;

@@ -4,7 +4,7 @@ import { Label } from '../../Elements/Label';
 import Link from 'next/link';
 import { Heart } from '@phosphor-icons/react';
 export const CardPokemon = (props) => {
-  const { pokemon, children, handleToFavorite, favorites } = props;
+  const { pokemon, children, handleToFavorite, id } = props;
 
   const checkFavorite = () => {
     let tempArray = localStorage.getItem('favorite')
@@ -18,7 +18,7 @@ export const CardPokemon = (props) => {
   return (
     <div
       className="relative w-full flex flex-col justify-between h-auto bg-white rounded-xl shadow-md transform transition duration-300 border-transparent hover:scale-105"
-      key={pokemon?.id}
+      key={id}
     >
       <Link
         href={`/pokemon/${pokemon?.name}`}
@@ -27,11 +27,11 @@ export const CardPokemon = (props) => {
         <div className="text-center">
           <div className="w-full lg:h-[200px] bg-slate-200 py-3 mb-2 lg:mb-3 rounded-t-xl">
             <Image
-              className="flex mx-auto my-auto object-contain"
               src={pokemon?.sprites?.other?.home?.front_default}
+              className="flex mx-auto my-auto object-contain"
               width={140}
               height={140}
-              alt={pokemon?.name}
+              alt="pokemon"
             />
           </div>
           <h1 className="font-bold text-xl lg:text-2xl text-black">
@@ -47,8 +47,12 @@ export const CardPokemon = (props) => {
         {children}
         <div className="flex justify-between pb-6 px-1 lg:px-6">
           <div>
-            {pokemon?.types?.map((type) => {
-              return <Label>{type.type.name}</Label>;
+            {pokemon?.types?.map((type, i) => {
+              return (
+                <Label id={i} key={i}>
+                  {type.type.name}
+                </Label>
+              );
             })}
           </div>
         </div>
@@ -73,6 +77,7 @@ export const CardPokemon = (props) => {
     </div>
   );
 };
+
 const Details = (props) => {
   const { pokemon } = props;
   return (
@@ -85,30 +90,30 @@ const Details = (props) => {
           <ul className="text-lg font-bold mb-3 text-center p-2 text-black">
             Basic
             <li className="text-sm font-normal text-left">
-              Weight : {pokemon.weight}
+              Weight : {pokemon?.weight}
             </li>
             <li className="text-sm font-normal text-left">
-              Height : {pokemon.height}
+              Height : {pokemon?.height}
             </li>
           </ul>
         </div>
         <div className="bg-slate-200 h-auto rounded-md">
           <ul className="text-lg font-bold mb-3 text-center p-2 text-black">
             Stat
-            {pokemon?.stats?.map((item) => {
+            {pokemon?.stats?.map((item, i) => {
               return (
-                <li className="text-sm font-normal text-left">
-                  <div class="flex justify-between">
-                    <span class="text-sm font-medium text-black">
-                      {item.stat.name}
+                <li className="text-sm font-normal text-left" key={i}>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-black">
+                      {item?.stat?.name}
                     </span>
-                    <span class="text-sm font-medium text-black">
-                      {item.base_stat}
+                    <span className="text-sm font-medium text-black">
+                      {item?.base_stat}
                     </span>
                   </div>
                   <progress
                     className="progress w-full"
-                    value={item.base_stat}
+                    value={item?.base_stat}
                     max="100"
                   ></progress>
                 </li>
@@ -120,4 +125,5 @@ const Details = (props) => {
     </div>
   );
 };
+
 CardPokemon.Details = Details;

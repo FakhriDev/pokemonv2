@@ -130,6 +130,7 @@ export default function Home() {
                     {pokemons.map((pokemon) => {
                       return (
                         <CardPokemon
+                          key={pokemon?.id}
                           pokemon={pokemon}
                           handleToFavorite={handleFavorite}
                           favorites={favorites}

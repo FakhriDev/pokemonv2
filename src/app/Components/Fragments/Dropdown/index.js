@@ -3,7 +3,7 @@ import { Menu } from '@headlessui/react';
 import { CaretDown } from '@phosphor-icons/react';
 
 export const Dropdown = (props) => {
-  const { typeMonster, filter, reset } = props;
+  const { typeMonster, filter } = props;
   return (
     <>
       <Menu>
@@ -20,8 +20,8 @@ export const Dropdown = (props) => {
             'absolute top-12 right-0 rounded-md shadow-xl max-w-[300px] h-60 overflow-y-scroll bg-white flex flex-col'
           }
         >
-          {typeMonster.map((type) => (
-            <Menu.Item key={type.id} as={Fragment} className={'m-2'}>
+          {typeMonster.map((type, i) => (
+            <Menu.Item as={Fragment} className={'m-2'} key={i}>
               {({ active }) => (
                 <button
                   href={type.id}

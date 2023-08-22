@@ -5,7 +5,7 @@ import { fetchPokemon } from '@/app/Services/fetchPokemon.service';
 import Link from 'next/link';
 import { ArrowLeft } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
-const page = ({ params }) => {
+const Page = ({ params }) => {
   const [pokemon, setPokemon] = useState([]);
   const [favorites, setFavorites] = useState([]);
   useEffect(() => {
