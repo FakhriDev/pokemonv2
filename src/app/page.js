@@ -67,7 +67,7 @@ export default function Home() {
   const [start, setStart] = useState(20);
   const loadMore = () => {
     axios
-      .get(`https://pokeapi.co/api/v2/pokemon/?limit=10&offset=${start}`)
+      .get(`https://pokeapi.co/api/v2/pokemon/?limit=25&offset=${start}`)
       .then((res) => {
         const results = res.data.results;
         const result = results.map(async (item) => {
@@ -94,25 +94,23 @@ export default function Home() {
         <Loading />
       ) : (
         <article className="max-w-5xl bg-slate-50 mx-auto min-h-screen p-2 lg:p-4 rounded-lg ">
-          <div className="sticky flex justify-between z-20 mb-2 gap-2">
-            <div className=" my-auto text-center">
-              <Link href="/favorite" className="text-black hover:text-gray-400">
-                MyFavorite
-              </Link>
+          <div className="sticky flex flex-row justify-end z-20 mb-2 gap-2">
+            <div className="absolute left-0 mt-4 text-black hover:text-gray-600">
+              <Link href="/favorite">MyFavorite</Link>
             </div>
             {filteredPokemon.length ? (
               <>
-                <Dropdown
-                  typeMonster={typeMonster}
-                  filter={handleFilter}
-                  reset={resetFilter}
-                />
                 <button
                   className="bg-red-200 text-red-500 rounded-md px-4 h-10"
                   onClick={resetFilter}
                 >
                   Reset
                 </button>
+                <Dropdown
+                  typeMonster={typeMonster}
+                  filter={handleFilter}
+                  reset={resetFilter}
+                />
               </>
             ) : (
               <Dropdown
