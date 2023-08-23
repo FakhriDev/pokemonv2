@@ -4,7 +4,7 @@ import { Label } from '../../Elements/Label';
 import Link from 'next/link';
 import { Heart } from '@phosphor-icons/react';
 export const CardPokemon = (props) => {
-  const { pokemon, children, handleToFavorite } = props;
+  const { pokemon, children, handleToFavorite, id } = props;
 
   const checkFavorite = () => {
     let tempArray = JSON.parse(localStorage.getItem('favorite')) || [];
@@ -14,7 +14,10 @@ export const CardPokemon = (props) => {
   };
 
   return (
-    <div className="relative w-full flex flex-col justify-between h-auto bg-white rounded-xl shadow-md transform transition duration-300 border-transparent hover:scale-105">
+    <div
+      className="relative w-full flex flex-col justify-between h-auto bg-white rounded-xl shadow-md transform transition duration-300 border-transparent hover:scale-105"
+      key={id}
+    >
       <Link
         href={`/pokemon/${pokemon?.name}`}
         className="text-center justify-center"
@@ -42,8 +45,12 @@ export const CardPokemon = (props) => {
         {children}
         <div className="flex justify-between pb-6 px-1 lg:px-6">
           <div>
-            {pokemon?.types?.map((type) => {
-              return <Label>{type.type.name}</Label>;
+            {pokemon?.types?.map((type, i) => {
+              return (
+                <Label id={i} key={i}>
+                  {type.type.name}
+                </Label>
+              );
             })}
           </div>
         </div>
@@ -91,9 +98,9 @@ const Details = (props) => {
         <div className="bg-slate-200 h-auto rounded-md">
           <ul className="text-lg font-bold mb-3 text-center p-2 text-black">
             Stat
-            {pokemon?.stats?.map((item) => {
+            {pokemon?.stats?.map((item, i) => {
               return (
-                <li className="text-sm font-normal text-left">
+                <li className="text-sm font-normal text-left" key={i}>
                   <div className="flex justify-between">
                     <span className="text-sm font-medium text-black">
                       {item?.stat?.name}

@@ -64,7 +64,11 @@ const Page = ({ params }) => {
           Back
         </Link>
         <div className="max-w-2xl z-20 mx-auto">
-          <CardPokemon pokemon={pokemon} handleToFavorite={handleFavorite}>
+          <CardPokemon
+            key={pokemon.id}
+            pokemon={pokemon}
+            handleToFavorite={handleFavorite}
+          >
             <CardPokemon.Details pokemon={pokemon} />
           </CardPokemon>
           <div></div>
