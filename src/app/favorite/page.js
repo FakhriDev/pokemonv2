@@ -64,10 +64,10 @@ const Page = () => {
         {favorites.length ? (
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 lg:gap-4 z-20 mb-4">
-              {favorites.map((pokemon) => {
+              {favorites.map((pokemon, i) => {
                 return (
                   <CardFavorite
-                    key={pokemon?.id}
+                    key={i}
                     pokemon={pokemon}
                     handleToFavorite={handleFavorite}
                     favorites={favorites}

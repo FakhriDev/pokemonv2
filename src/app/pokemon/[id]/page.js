@@ -17,6 +17,20 @@ const Page = ({ params }) => {
     setFavorites(JSON.parse(localStorage.getItem('favorite')) || []);
   }, []);
 
+  const formatData = (data) => {
+    let hit = pokemons.find((pokemon) => pokemon.id === data);
+    let tempArray = {
+      id: hit?.id,
+      spriteUrl: hit?.sprites?.other?.home?.front_default,
+      name: hit?.name,
+      types: [
+        hit?.types[0]?.type?.name,
+        hit?.types?.length > 1 ? hit?.types[1]?.type?.name : undefined,
+      ],
+    };
+    return tempArray;
+  };
+
   const handleFavorite = (id) => {
     if (favorites.length !== 0) {
       if (favorites.find((item) => item.id === id)) {
@@ -24,15 +38,18 @@ const Page = ({ params }) => {
         setFavorites(aunth);
         localStorage.setItem('favorite', JSON.stringify(aunth));
       } else {
-        setFavorites([...favorites, { id }]);
+        setFavorites([...favorites, formatData(id)]);
         localStorage.setItem(
           'favorite',
-          JSON.stringify([...favorites, { id }])
+          JSON.stringify([...favorites, formatData(id)])
         );
       }
     } else {
-      setFavorites([...favorites, { id }]);
-      localStorage.setItem('favorite', JSON.stringify([...favorites, { id }]));
+      setFavorites([...favorites, formatData(id)]);
+      localStorage.setItem(
+        'favorite',
+        JSON.stringify([...favorites, formatData(id)])
+      );
     }
   };
   return (
