@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { Label } from '../../Elements/Label';
 import Link from 'next/link';
 import { Heart } from '@phosphor-icons/react';
-export const CardPokemon = (props) => {
-  const { pokemon, children, handleToFavorite, id } = props;
+export const CardFavorite = (props) => {
+  const { pokemon, handleToFavorite, id } = props;
 
   const checkFavorite = () => {
     let tempArray = JSON.parse(localStorage.getItem('favorite')) || [];
@@ -25,7 +25,7 @@ export const CardPokemon = (props) => {
         <div className="text-center">
           <div className="w-full lg:h-[200px] bg-slate-200 py-3 mb-2 lg:mb-3 rounded-t-xl">
             <Image
-              src={pokemon?.sprites?.other?.home?.front_default}
+              src={pokemon?.spriteUrl}
               className="flex mx-auto my-auto object-contain"
               width={140}
               height={140}
@@ -42,16 +42,15 @@ export const CardPokemon = (props) => {
         </div>
       </Link>
       <div>
-        {children}
         <div className="flex justify-between pb-6 px-1 lg:px-6">
           <div>
-            {pokemon?.types?.map((type, i) => {
+            {/* {pokemon?.types?.map((type, i) => {
               return (
                 <Label id={i} key={i}>
                   {type.type.name}
                 </Label>
               );
-            })}
+            })} */}
           </div>
         </div>
         <div className="absolute top-2 lg:top-6 right-2 lg:right-6">
@@ -75,53 +74,3 @@ export const CardPokemon = (props) => {
     </div>
   );
 };
-
-const Details = (props) => {
-  const { pokemon } = props;
-  return (
-    <div className="pb-6 px-1 lg:px-6 ">
-      <h1 className="flex mx-auto text-center justify-center font-bold text-lg my-4 text-black">
-        Details
-      </h1>
-      <div className="grid grid-cols-1 md:grid-lg-cols-2 lg:grid-cols-2 pb-6 px-1 lg:px-6 gap-2">
-        <div className="h-auto bg-slate-200 rounded-md">
-          <ul className="text-lg font-bold mb-3 text-center p-2 text-black">
-            Basic
-            <li className="text-sm font-normal text-left">
-              Weight : {pokemon?.weight}
-            </li>
-            <li className="text-sm font-normal text-left">
-              Height : {pokemon?.height}
-            </li>
-          </ul>
-        </div>
-        <div className="bg-slate-200 h-auto rounded-md">
-          <ul className="text-lg font-bold mb-3 text-center p-2 text-black">
-            Stat
-            {pokemon?.stats?.map((item, i) => {
-              return (
-                <li className="text-sm font-normal text-left" key={i}>
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium text-black">
-                      {item?.stat?.name}
-                    </span>
-                    <span className="text-sm font-medium text-black">
-                      {item?.base_stat}
-                    </span>
-                  </div>
-                  <progress
-                    className="progress w-full"
-                    value={item?.base_stat}
-                    max="100"
-                  ></progress>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-CardPokemon.Details = Details;
