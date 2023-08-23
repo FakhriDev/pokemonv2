@@ -15,32 +15,28 @@ export const CardFavorite = (props) => {
 
   return (
     <div
-      className="relative w-full flex flex-col justify-between h-auto bg-white rounded-xl shadow-md transform transition duration-300 border-transparent hover:scale-105"
+      className="relative w-full flex flex-col justify-between h-auto bg-white rounded-xl shadow-md transform transition duration-300 border-transparent"
       key={id}
     >
-      <Link
-        href={`/pokemon/${pokemon?.name}`}
-        className="text-center justify-center"
-      >
-        <div className="text-center">
-          <div className="w-full lg:h-[200px] bg-slate-200 py-3 mb-2 lg:mb-3 rounded-t-xl">
-            <Image
-              src={pokemon?.spriteUrl}
-              className="flex mx-auto my-auto object-contain"
-              width={140}
-              height={140}
-              alt="pokemon"
-            />
-          </div>
-          <h1 className="font-bold text-xl lg:text-2xl text-black">
-            {pokemon?.name}
-          </h1>
-          <h2 className="font-semibold text-sm lg:text-md mb-1 lg:mb-3">
-            {'# '}
-            {pokemon?.id}
-          </h2>
+      <div className="text-center">
+        <div className="w-full lg:h-[200px] bg-slate-200 py-3 mb-2 lg:mb-3 rounded-t-xl">
+          <Image
+            src={pokemon?.spriteUrl}
+            className="flex mx-auto my-auto object-contain"
+            width={140}
+            height={140}
+            alt="pokemon"
+          />
         </div>
-      </Link>
+        <h1 className="font-bold text-xl lg:text-2xl text-black">
+          {pokemon?.name}
+        </h1>
+        <h2 className="font-semibold text-sm lg:text-md mb-1 lg:mb-3">
+          {'# '}
+          {pokemon?.id}
+        </h2>
+      </div>
+
       <div>
         <div className="flex justify-between pb-6 px-1 lg:px-6">
           <div>
