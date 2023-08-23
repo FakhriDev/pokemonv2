@@ -1,7 +1,8 @@
 'use client';
+import axios from 'axios';
 import { CardPokemon } from '@/app/Components/Fragments/CardPokemon';
 import { Header } from '@/app/Components/Fragments/Header';
-import { fetchPokemon } from '@/app/Services/fetchPokemon.service';
+
 import Link from 'next/link';
 import { ArrowLeft } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
@@ -9,11 +10,15 @@ const Page = ({ params }) => {
   const [pokemon, setPokemon] = useState([]);
   const [favorites, setFavorites] = useState([]);
   useEffect(() => {
-    fetchPokemon((results) => {
-      Promise.all(results).then((res) =>
-        setPokemon(res.find((v) => v.name === params.id))
-      );
-    });
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${params.id}`)
+      .then((res) => {
+        const results = res.data;
+        setPokemon(results);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     setFavorites(JSON.parse(localStorage.getItem('favorite')) || []);
   }, []);
   const formatData = (data) => {
