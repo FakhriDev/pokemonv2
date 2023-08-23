@@ -16,16 +16,14 @@ const Page = ({ params }) => {
     });
     setFavorites(JSON.parse(localStorage.getItem('favorite')) || []);
   }, []);
-
   const formatData = (data) => {
-    let hit = pokemon.find((pokemon) => pokemon.id === data);
     let tempArray = {
-      id: hit?.id,
-      spriteUrl: hit?.sprites?.other?.home?.front_default,
-      name: hit?.name,
+      id: pokemon.id,
+      spriteUrl: pokemon?.sprites?.other?.home?.front_default,
+      name: pokemon?.name,
       types: [
-        hit?.types[0]?.type?.name,
-        hit?.types?.length > 1 ? hit?.types[1]?.type?.name : undefined,
+        pokemon?.types[0]?.type?.name,
+        pokemon?.types?.length > 1 ? pokemon?.types[1]?.type?.name : undefined,
       ],
     };
     return tempArray;
@@ -64,11 +62,7 @@ const Page = ({ params }) => {
           Back
         </Link>
         <div className="max-w-2xl z-20 mx-auto">
-          <CardPokemon
-            key={pokemon.id}
-            pokemon={pokemon}
-            handleToFavorite={handleFavorite}
-          >
+          <CardPokemon pokemon={pokemon} handleToFavorite={handleFavorite}>
             <CardPokemon.Details pokemon={pokemon} />
           </CardPokemon>
           <div></div>
