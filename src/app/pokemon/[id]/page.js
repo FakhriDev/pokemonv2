@@ -18,7 +18,7 @@ const Page = ({ params }) => {
   }, []);
 
   const formatData = (data) => {
-    let hit = pokemons.find((pokemon) => pokemon.id === data);
+    let hit = pokemon.find((pokemon) => pokemon.id === data);
     let tempArray = {
       id: hit?.id,
       spriteUrl: hit?.sprites?.other?.home?.front_default,
