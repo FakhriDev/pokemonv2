@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
-module.exports = {
-  reactStrictMode: true,
+const nextConfig = {
   images: {
     domains: ['raw.githubusercontent.com'],
     formats: ['image/webp'],
   },
 };
+
+export default nextConfig;

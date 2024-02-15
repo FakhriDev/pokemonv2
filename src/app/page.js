@@ -1,180 +1,136 @@
 'use client';
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { Header } from './Components/Fragments/Header';
-import { CardPokemon } from './Components/Fragments/CardPokemon';
-import { fetchPokemon } from './Services/fetchPokemon.service';
-import axios from 'axios';
-import Loading from './loading';
-import { Dropdown } from './Components/Fragments/Dropdown';
-import { fetchTypePokemon } from './Services/fetchTypePokemon.service';
+import Image from 'next/image';
+import useFetchPokemons from './features/pokemon/useFetchPokemons';
+import { LoadingPokemonList } from './components/LoadingPokemonList';
+import { useState } from 'react';
+import Header from './components/Header';
+import { Heart } from '@phosphor-icons/react';
+import useFetchFavoritePokemons from './features/pokemon/useFetchFavorites';
+import { NotificationLove } from './components/NotificationLove';
 import Link from 'next/link';
 
 export default function Home() {
-  //Store Data Pokemons
-  const [pokemons, setPokemons] = useState([]);
-  //Store Type Pokemon
-  const [typeMonster, setTypeMonster] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [filteredPokemon, setFilteredPokemon] = useState([]);
-  const [favorites, setFavorites] = useState([]);
-  //Mounted & Set Datas API Pokemon
-  useEffect(() => {
-    setIsLoading(true);
-    if (filteredPokemon.length === 0) {
-      fetchPokemon((results) => {
-        Promise.all(results).then((res) => setPokemons(res));
-      });
-    }
+  const [filter, setFilter] = useState('');
 
-    fetchTypePokemon((results) => {
-      setTypeMonster(results);
-    });
-    setFavorites(JSON.parse(localStorage.getItem('favorite')) || []);
-    setIsLoading(false);
-  }, [filteredPokemon]);
-
-  const handleFilter = (type) => {
-    const filterResult = pokemons.filter((pokemon) =>
-      pokemon.types.map((type) => type.type.name).includes(type)
-    );
-    setPokemons(filterResult);
-    setFilteredPokemon(type);
+  const { data: pokemons, isLoading, loadMore } = useFetchPokemons(filter);
+  const { setFavoritePokemons, favorite, notification } =
+    useFetchFavoritePokemons();
+  const handleAddFavoritePokemons = (pokemon) => {
+    setFavoritePokemons(pokemon);
+  };
+  const setFiltered = (value) => {
+    setFilter(value);
   };
 
-  const resetFilter = () => {
-    setFilteredPokemon([]);
-  };
-
-  const formatData = (data) => {
-    let hit = pokemons.find((pokemon) => pokemon.id === data);
-    let tempArray = {
-      id: hit?.id,
-      spriteUrl: hit?.sprites?.other?.home?.front_default,
-      name: hit?.name,
-      types: [
-        hit?.types[0]?.type?.name,
-        hit?.types?.length > 1 ? hit?.types[1]?.type?.name : undefined,
-      ],
-    };
-    return tempArray;
-  };
-
-  const handleFavorite = (id) => {
-    if (favorites.length !== 0) {
-      if (favorites.find((item) => item.id === id)) {
-        const aunth = favorites.filter((item) => item.id !== id);
-        setFavorites(aunth);
-        localStorage.setItem('favorite', JSON.stringify(aunth));
-      } else {
-        setFavorites([...favorites, formatData(id)]);
-        localStorage.setItem(
-          'favorite',
-          JSON.stringify([...favorites, formatData(id)])
-        );
-      }
-    } else {
-      setFavorites([...favorites, formatData(id)]);
-      localStorage.setItem(
-        'favorite',
-        JSON.stringify([...favorites, formatData(id)])
-      );
-    }
-  };
-  const [start, setStart] = useState(20);
-  const loadMore = () => {
-    axios
-      .get(`https://pokeapi.co/api/v2/pokemon/?limit=25&offset=${start}`)
-      .then((res) => {
-        const results = res.data.results;
-        const result = results.map(async (item) => {
-          try {
-            const temp = await axios.get(item.url);
-            return temp.data;
-          } catch (error) {
-            throw error;
-          }
-        });
-        Promise.all(result).then((res) => {
-          setPokemons([...pokemons, ...res]);
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    setStart(start + 20);
-  };
-  console.log(favorites);
   return (
     <>
-      <Header />
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <article className="max-w-5xl bg-slate-50 mx-auto min-h-screen p-2 lg:p-4 rounded-lg ">
-          <div className="sticky flex flex-row justify-end z-20 mb-2 gap-2">
-            <div className="absolute left-0 mt-4 text-black hover:text-gray-600">
-              <Link href="/favorite">MyFavorite</Link>
-            </div>
-            {filteredPokemon.length ? (
-              <>
-                <button
-                  className="bg-red-200 text-red-500 rounded-md px-4 h-10"
-                  onClick={resetFilter}
-                >
-                  Reset
-                </button>
-                <Dropdown
-                  typeMonster={typeMonster}
-                  filter={handleFilter}
-                  reset={resetFilter}
-                />
-              </>
-            ) : (
-              <Dropdown
-                typeMonster={typeMonster}
-                filter={handleFilter}
-                reset={resetFilter}
-              />
-            )}
-          </div>
-          {!isLoading ? (
+      {notification[0].status && (
+        <NotificationLove type={notification[0].type} />
+      )}
+
+      <Header filter={filter} setFiltered={setFiltered} />
+
+      <section className="max-w-7xl mx-auto w-full font-mono text-sm px-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+          {isLoading && (
             <>
-              {pokemons.length ? (
-                <>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 lg:gap-4 z-20 mb-4">
-                    {pokemons.map((pokemon) => {
-                      return (
-                        <CardPokemon
-                          key={pokemon?.id}
-                          pokemon={pokemon}
-                          handleToFavorite={handleFavorite}
-                          favorites={favorites}
+              <LoadingPokemonList />
+            </>
+          )}
+          {pokemons?.map((pokemon) => {
+            return (
+              <div
+                href={`/pokemon/${pokemon?.name}`}
+                className="relative w-full bg-gradient-to-b from-zinc-200 backdrop-blur-2xl flex flex-col justify-between h-auto rounded-xl shadow-md transform transition duration-300 border-transparent hover:scale-105"
+                key={pokemon?.id}
+              >
+                <Link href={`/pokemon/${pokemon?.name}`}>
+                  <div className="text-center justify-center">
+                    <div className="text-center">
+                      <div className="w-full lg:h-[200px] bg-slate-300 py-3 mb-2 lg:mb-3 rounded-t-xl">
+                        <Image
+                          src={pokemon?.sprites?.other?.home?.front_default}
+                          className="flex mx-auto my-auto object-contain"
+                          width={140}
+                          height={140}
+                          priority={true}
+                          alt="pokemon"
                         />
-                      );
-                    })}
+                      </div>
+                      <h1 className="font-bold text-xl lg:text-2xl text-black">
+                        {pokemon?.name}
+                      </h1>
+                      <h2 className="font-semibold text-sm lg:text-md mb-1 lg:mb-3">
+                        {pokemon?.id}
+                      </h2>
+                    </div>
                   </div>
-                  <div className=" text-center lg:max-w-5xl">
+                </Link>
+                <div>
+                  <div className="flex justify-between pb-6 px-1 lg:px-6">
+                    <div>
+                      {pokemon?.types?.map((type, i) => {
+                        return (
+                          <label
+                            className="mr-2 lg:mr-2 bg-slate-200 p-1 lg:p-2 rounded text-black"
+                            key={i}
+                          >
+                            {type?.type?.name}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="absolute top-2 lg:top-6 right-2 lg:right-6">
                     <button
-                      className="button bg-slate-600 p-3 text-white rounded-md"
-                      onClick={loadMore}
+                      className="relative w-34 h-34 p-1 bg-white hover:shadow-md rounded-full has-tooltip"
+                      onClick={() =>
+                        handleAddFavoritePokemons({
+                          id: pokemon?.id,
+                          image: pokemon?.sprites?.other?.home?.front_default,
+                          name: pokemon?.name,
+                          types: pokemon?.types?.map(
+                            (type) => type?.type?.name
+                          ),
+                        })
+                      }
                     >
-                      LoadMore
+                      {favorite.some(
+                        (favPokemon) => favPokemon?.id === pokemon.id
+                      ) ? (
+                        <>
+                          <span className="tooltip rounded shadow-lg p-2 bg-gradient-to-t from-zinc-100 backdrop-blur-2xl text-red-500 -mt-14 -ml-10 z-50">
+                            remove to Favorite
+                          </span>
+                          <Heart size={28} color="red" weight="fill" />
+                        </>
+                      ) : (
+                        <>
+                          <span className="tooltip rounded shadow-lg p-2 bg-gradient-to-t from-zinc-100 backdrop-blur-2xl text-red-500 -mt-14 -ml-10 z-50">
+                            add to Favorite
+                          </span>
+                          <Heart size={28} color="red" />
+                        </>
+                      )}
                     </button>
                   </div>
-                  <div className="mx-auto text-center"></div>
-                </>
-              ) : (
-                <div className="mx-auto text-center">
-                  <h1 className="font-bold text-lg text-black">Not Found!</h1>
                 </div>
-              )}
-            </>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex justify-center">
+          {!isLoading ? (
+            <button className="mb-10" onClick={loadMore}>
+              Load More
+            </button>
           ) : (
-            <Loading />
+            <button className="mb-10" disabled>
+              Loading ...
+            </button>
           )}
-        </article>
-      )}
+        </div>
+      </section>
     </>
   );
 }
